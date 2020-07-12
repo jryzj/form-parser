@@ -5,7 +5,6 @@ module.exports = {
   ctTp: 'text/plain',
   ctAX: 'application/x-www-form-urlencoded',
   formParse: function (request, postdata) {
-    // console.log(request.headers);
     let mt = request.method.toUpperCase();
     let ct = request.headers['content-type'];
     let params;
@@ -46,22 +45,27 @@ module.exports = {
     return params;
   },
   postBodyparse: function (request, postdata) {
-    //传入的post是Buffer的类型
+    //传入的postdata是Buffer的类型
+    //postdata is Buffer type
 
-    if (typeof post != 'string') {
+    if (typeof postdata != 'string') {
       postdata = postdata.toString();
     } //复制一个字符串副本，以便后面使用字符串方法。
+    //convert postdata to string
 
     //获取request的headers属性的content-type中的boundary定义。
+    //get the boundary index in content-type of head
     let index = request['headers']['content-type'].indexOf('boundary=');
 
     //在接受到的拼接数据中，boundary前面多个‘--’，在整个数据最后也多个‘--’
+    //get the boundary, and add '--' before and after boundary, which is real seperator.
     let boundary =
       '--' + request['headers']['content-type'].substring(index + 9);
 
-    let postArray = postdata.split(boundary); //用字符串的split方法分割数据，获得数组。
+    let postArray = postdata.split(boundary); //用字符串的split方法分割数据，获得数组。 use boundary to split
     /*
           分割后的数组结构例子如下。
+          //the array after split
           [ '',
           '\r\nContent-Disposition: form-data; name="filename"\r\n\r\nsavapic\r\n',
           '\r\nContent-Disposition: form-data; name="file"; filename="Computer_Monitor_128px_566914_easyicon.net.png"\r\nContent-Type: image/png\r\n\r\nPNG\r\n\u001a\n\u0000\u0000\u0000\rIHDR\u0000\u0000\u0000\u0000\u0000\u0000
@@ -69,7 +73,7 @@ module.exports = {
           '--\r\n' ]
            */
 
-    let params = []; //用于装解析后要返回的request数据，内含的每一项都是对象。
+    let params = []; //用于装解析后要返回的request数据，内含的每一项都是对象。array to save data after parsing
     let l = postArray.length;
     let code;
     let postPhrase = ''; //用于装数组中的单条数据，用于解析。
