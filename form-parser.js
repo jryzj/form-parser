@@ -115,15 +115,15 @@ module.exports = {
             position++;
           }
         }
-        //获取数据，如果是文件是以二进制形式拼在request中的
-        let p1 = postPhrase.indexOf('\r\n\r\n') + 4; //再跳过后面的4个回车换行符，这个位置作为文件数据的开始位置
-        let p2 = postPhrase.length - 2; //分割的出的单条数据是以\r\n结束的，也需要去掉。
-        paramObj.value = postPhrase.slice(p1, p2); //从单条数据中取出文件的数据，存到paramObj.value
+        //获取数据，如果是文件是以二进制形式拼在request中的。get binary data.
+        let p1 = postPhrase.indexOf('\r\n\r\n') + 4; //再跳过后面的4个回车换行符，这个位置作为文件数据的开始位置。index1, skip seperator '\r\n\r\n' at beginning.
+        let p2 = postPhrase.length - 2; //分割的出的单条数据是以\r\n结束的，也需要去掉。index2, skip seperator '\r\n' at end.
+        paramObj.value = postPhrase.slice(p1, p2); //从单条数据中取出文件的数据，存到paramObj.value。get data between index1 and index2
 
         //如果要获取其他类型的信息，先把request的post数据打印出来，然后分析获取。
         params.push(paramObj);
       }
     }
-    return params; //返回一个对象数组
+    return params; //返回一个对象数组。return data in object
   },
 };
