@@ -76,37 +76,38 @@ module.exports = {
     let params = []; //用于装解析后要返回的request数据，内含的每一项都是对象。array to save data after parsing
     let l = postArray.length;
     let code;
-    let postPhrase = ''; //用于装数组中的单条数据，用于解析。
+    let postPhrase = ''; //用于装数组中的单条数据，用于解析。save template data in array
     for (let i = 1; i < l; i++) {
-      let paramObj = {}; //用于装解析后的对象数据
+      let paramObj = {}; //用于装解析后的对象数据。save data after parsing
       postPhrase = postArray[i];
-      if (postPhrase.length != 0 && postPhrase != '--\r\n') {
+      if (postPhrase.length != 0 && postPhrase != '--\r\n') {//filter nosense data
         //排除掉上面分割后的数组中的无用数据。
 
         //获得formdata中input的name及值。放在paramObj.name中
-        let position = postPhrase.indexOf('name='); //先定位到name，然后获取后面双引号中值
+        let position = postPhrase.indexOf('name='); //先定位到name，然后获取后面双引号中值。get name index
         if (position != -1) {
-          position += 6; //调整到值的位置偏移，name="的长度是6
+          position += 6; //调整到值的位置偏移，name="的长度是6。adjust index to value
           paramObj.name = '';
           while ((code = postPhrase.charAt(position)) !== '"') {
-            //逐个取出值的字母
+            //逐个取出值的字母。get character at the index posistion
             paramObj.name += code;
             position++;
           }
         }
 
-        //获得formdata中input的Content-Type值，放在paramObj.ContentType中
-        position = postPhrase.indexOf('Content-Type:'); //先定位到Content-Type:，然后取后面的值
+        //获得formdata中input的Content-Type值，放在paramObj.ContentType中。get content-type
+        position = postPhrase.indexOf('Content-Type:'); //先定位到Content-Type:，然后取后面的值。get 'Content-Type' index
         if (position != -1) {
-          position += 14; //调整到值的位置偏移，Content-Type:及一个空格长度是14
+          position += 14; //调整到值的位置偏移，Content-Type:及一个空格长度是14。adjust index to content-type value
           paramObj['content-type'] = '';
           while ((code = postPhrase.charAt(position)) != '\r') {
-            //逐个取出值的字母
+            //逐个取出值的字母。get character at the index posistion
             paramObj.ContentType += code;
             position++;
           }
 
-          paramObj.filename = ''; //如果是文件，表单的数据中还有文件名，可以取出。
+          //如果是文件，表单的数据中还有文件名，可以取出。get filename if available. method is same as above.
+          paramObj.filename = ''; 
           position = postPhrase.indexOf('filename') + 10; //定位到filename，然后调整偏移到值的位置。filename="的长度是10
           while ((code = postPhrase.charAt(position)) != '"') {
             //逐个取出值的字母
